@@ -1,0 +1,41 @@
+# Tier-to-model routing configuration
+# Each tier maps to a primary and fallback model.
+# You can modify this file and call PUT /v1/routing-config to hot-reload.
+
+tiers:
+  tier1:
+    label: "simple"
+    description: "Reformatting, extraction, basic Q&A from provided context"
+    primary:
+      provider: "anthropic"
+      modelId: "claude-haiku-20240307"
+    fallback:
+      provider: "openai"
+      modelId: "gpt-4o-mini"
+
+  tier2:
+    label: "moderate"
+    description: "Summarization, classification, structured analysis"
+    primary:
+      provider: "openai"
+      modelId: "gpt-4o-mini"
+    fallback:
+      provider: "anthropic"
+      modelId: "claude-3-5-sonnet-20241022"
+
+  tier3:
+    label: "complex"
+    description: "Multi-step reasoning, creative generation, nuanced judgment"
+    primary:
+      provider: "openai"
+      modelId: "gpt-4o"
+    fallback:
+      provider: "anthropic"
+      modelId: "claude-3-5-sonnet-20241022"
+
+# Quality verification threshold (0.0 - 1.0)
+# If the routed model's quality score falls below this, escalate to higher tier
+qualityThreshold: 0.75
+
+# Auto-escalation: if verifier detects quality gap, re-route and return better result
+autoEscalation: true
