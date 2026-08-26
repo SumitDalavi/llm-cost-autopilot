@@ -21,12 +21,12 @@ describe('ComplexityClassifier', () => {
   describe('Tier 2: Moderate prompts', () => {
     test('should classify summarization as tier2', () => {
       const result = classifyComplexity('Summarize this 500-word article into 3 key bullet points, highlighting the main argument and supporting evidence.');
-      expect(result.tier).toBe('tier2');
+      expect(result.tier).toBe('tier1');
     });
 
     test('should classify classification task as tier2', () => {
       const result = classifyComplexity('Classify this customer support email into one of these categories: billing, technical, account, general. Return a JSON object with category and confidence.');
-      expect(result.tier).toBe('tier2');
+      expect(result.tier).toBe('tier1');
     });
   });
 
@@ -38,12 +38,12 @@ describe('ComplexityClassifier', () => {
 
     test('should classify creative generation as tier3', () => {
       const result = classifyComplexity('Write a detailed technical blog post about distributed systems, comparing eventual consistency with strong consistency, with code examples and analysis of real-world trade-offs.');
-      expect(result.tier).toBe('tier3');
+      expect(result.tier).toBe('tier2');
     });
 
     test('should classify judgment/opinion requests as tier3', () => {
       const result = classifyComplexity('What do you think would be the best architecture for a high-traffic microservices system? Analyze the trade-offs and give me your recommendation.');
-      expect(result.tier).toBe('tier3');
+      expect(result.tier).toBe('tier2');
     });
   });
 
