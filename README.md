@@ -1,6 +1,9 @@
 # LLM Cost Autopilot
 
-> **Reduce your LLM API costs by 60%+** without sacrificing output quality.
+> **Maturity:** Full Prototype
+> _An intelligent routing proxy that reduces LLM API costs by dynamically routing requests based on complexity._
+
+> **Reduce your LLM API costs by up to 82%** (see [Benchmark Results](benchmarks/results/savings_benchmark.json)) without sacrificing output quality.
 >
 > An intelligent routing proxy that sits in front of OpenAI, Anthropic, and Ollama. Every incoming request is classified by complexity and routed to the cheapest model capable of handling it — with async quality verification to catch any regressions.
 
@@ -176,12 +179,20 @@ npm test -- --watch        # Watch mode
 
 The classifier test suite covers all three complexity tiers and all feature extraction patterns.
 
-## 📄 Architecture Decisions
+## Mock Boundaries (Honest Scope)
 
-See [`docs/architecture.md`](docs/architecture.md) for:
-- Why a heuristic classifier over an LLM-based one
-- Trade-offs of synchronous routing vs. async quality verification
-- The feedback loop design for continuous improvement
+| What | Status | Details |
+|---|---|---|
+| OpenAI / Anthropic APIs | **Optional** | Uses real APIs when keys are provided, otherwise falls back to a mocked LLM interface for testing. |
+| Ollama | **Optional** | Can connect to a local Ollama instance for local routing. |
+| SQLite Database | **Real** | Uses `better-sqlite3` for high-throughput, zero-infra local logging. |
+
+## 📚 Documentation
+
+- [Architecture](docs/ARCHITECTURE.md) — System diagram and component details
+- [Runbook](docs/runbook.md) — Setup, commands, and expected outputs
+- [Decisions](docs/decisions.md) — ADRs for router pattern choices
+- [Changelog](docs/changelog.md) — Change history
 
 ## 👨‍💻 Author
 
@@ -194,3 +205,11 @@ See [`docs/architecture.md`](docs/architecture.md) for:
 - **CI Pipeline Remediation:** Successfully resolved all CI/CD pipeline failures and established baseline CI workflows.
 - **Specific Fix:** Added and configured robust GitHub Actions workflows for automated testing, linting, and formatting.
 - **Status:** 🟩 Passing
+
+
+## 📄 Architecture Decisions
+
+See [`docs/architecture.md`](docs/architecture.md) for:
+- Why a heuristic classifier over an LLM-based one
+- Trade-offs of synchronous routing vs. async quality verification
+- The feedback loop design for continuous improvement
