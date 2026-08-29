@@ -3,8 +3,6 @@
 > **Maturity:** Full Prototype
 > _An intelligent routing proxy that reduces LLM API costs by dynamically routing requests based on complexity._
 
-> **Reduce your LLM API costs by up to 82%** (see [Benchmark Results](benchmarks/results/savings_benchmark.json)) without sacrificing output quality.
->
 > An intelligent routing proxy that sits in front of OpenAI, Anthropic, and Ollama. Every incoming request is classified by complexity and routed to the cheapest model capable of handling it — with async quality verification to catch any regressions.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?logo=typescript)](https://www.typescriptlang.org/)
@@ -130,26 +128,9 @@ Response includes routing metadata:
 | `PUT` | `/v1/routing-config` | Update routing config (hot-reload) |
 | `GET` | `/health` | Health check |
 
-## 💰 Cost Savings
+## 💰 Cost Telemetry
 
-The `GET /v1/stats` endpoint returns:
-
-```json
-{
-  "totalRequests": 10000,
-  "totalCost": 0.82,
-  "totalCostIfAllGpt4o": 4.70,
-  "savedAmount": 3.88,
-  "savingsPercentage": 82.5,
-  "routingDistribution": {
-    "claude-haiku-20240307": 6200,
-    "gpt-4o-mini": 3100,
-    "gpt-4o": 700
-  },
-  "escalationRate": 2.3,
-  "avgQualityScore": 0.91
-}
-```
+The `GET /v1/stats` endpoint returns cost telemetry and routing distribution metrics.
 
 ## ⚙️ Routing Configuration
 
