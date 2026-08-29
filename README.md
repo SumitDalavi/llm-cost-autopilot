@@ -5,6 +5,7 @@
 
 > An intelligent routing proxy that sits in front of OpenAI, Anthropic, and Ollama. Every incoming request is classified by complexity and routed to the cheapest model capable of handling it — with async quality verification to catch any regressions.
 
+[![CI Pipeline](https://github.com/SumitDalavi/llm-cost-autopilot/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/SumitDalavi/llm-cost-autopilot/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-20-green?logo=nodedotjs)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
