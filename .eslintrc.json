@@ -1,12 +1,12 @@
 {
-  "parserOptions": { "sourceType": "module" },
-    "env": {
+  "env": {
     "node": true,
     "es2021": true,
     "jest": true
   },
   "parserOptions": {
-    "ecmaVersion": 12
+    "ecmaVersion": 12,
+    "sourceType": "module"
   },
   "rules": {}
 }
