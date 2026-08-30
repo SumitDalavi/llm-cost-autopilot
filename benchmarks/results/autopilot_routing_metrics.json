@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-08-29T13:57:08.578Z",
+  "environment": {
+    "os": "win32",
+    "cpu": "x64",
+    "node_version": "v24.19.0"
+  },
+  "fixture": "1000 mixed prompts mapped to oracle tiers",
+  "seed": 42,
+  "results": {
+    "routing_decision_p50_ms": 0.0036,
+    "routing_decision_p99_ms": 0.0135,
+    "provider_selection_accuracy_pct": 33.4,
+    "simulated_cost_autopilot_usd": 1.777796,
+    "simulated_cost_naive_tier3_usd": 1.948955,
+    "cost_savings_pct": 8.78
+  },
+  "command": "bash benchmarks/run.sh",
+  "notes": "Naive cost assumes always using tier3. Autopilot routes dynamically."
+}

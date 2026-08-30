@@ -25,7 +25,12 @@ export async function sendRequest(
   let promptTokens: number;
   let completionTokens: number;
 
-  if (config.provider === 'openai') {
+  if (process.env.OPENAI_API_KEY?.startsWith('sk-dummy') || process.env.ANTHROPIC_API_KEY?.startsWith('sk-dummy')) {
+    content = `[Mock Response] Routed to ${config.modelId} by Cost Autopilot`;
+    promptTokens = 10;
+    completionTokens = 20;
+    await new Promise(resolve => setTimeout(resolve, 50));
+  } else if (config.provider === 'openai') {
     const response = await openai.chat.completions.create({
       model: config.modelId,
       messages: request.messages,
