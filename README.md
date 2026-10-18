@@ -1,6 +1,10 @@
 # LLM Cost Autopilot
 
 [![Release](https://img.shields.io/github/v/release/SumitDalavi/llm-cost-autopilot?color=blue&logo=github)](https://github.com/SumitDalavi/llm-cost-autopilot/releases)
+[![Release Workflow](https://github.com/SumitDalavi/llm-cost-autopilot/actions/workflows/release.yml/badge.svg)](https://github.com/SumitDalavi/llm-cost-autopilot/actions/workflows/release.yml)
+[![SBOM](https://img.shields.io/badge/SBOM-SPDX%20JSON-blueviolet?logo=spdx)](https://github.com/SumitDalavi/llm-cost-autopilot/releases)
+
+[![Release](https://img.shields.io/github/v/release/SumitDalavi/llm-cost-autopilot?color=blue&logo=github)](https://github.com/SumitDalavi/llm-cost-autopilot/releases)
 [![SBOM](https://img.shields.io/badge/SBOM-SPDX%20JSON-blueviolet?logo=spdx)](https://github.com/SumitDalavi/llm-cost-autopilot/releases)
 
 > **Maturity:** Full Prototype
@@ -199,7 +203,7 @@ See [`docs/architecture.md`](docs/architecture.md) for:
 - Trade-offs of synchronous routing vs. async quality verification
 - The feedback loop design for continuous improvement
 
-## Release & Verification
+## Release & Security Verification
 
 The project includes an automated DevSecOps release pipeline (`.github/workflows/release.yml`) triggered on semantic version tags (`v*.*.*`).
 
@@ -219,3 +223,10 @@ gh release view v0.1.0 --repo SumitDalavi/llm-cost-autopilot
 gh release download v0.1.0 --repo SumitDalavi/llm-cost-autopilot --pattern "sbom.spdx.json"
 cat sbom.spdx.json | jq .
 ```
+
+## Documentation
+
+- [Architecture](docs/ARCHITECTURE.md)
+- [Runbook](docs/runbook.md)
+- [Decisions](docs/decisions.md)
+- [Changelog](docs/changelog.md)
