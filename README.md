@@ -1,5 +1,8 @@
 # LLM Cost Autopilot
 
+[![Release](https://img.shields.io/github/v/release/SumitDalavi/llm-cost-autopilot?color=blue&logo=github)](https://github.com/SumitDalavi/llm-cost-autopilot/releases)
+[![SBOM](https://img.shields.io/badge/SBOM-SPDX%20JSON-blueviolet?logo=spdx)](https://github.com/SumitDalavi/llm-cost-autopilot/releases)
+
 > **Maturity:** Full Prototype
 > _An intelligent routing proxy that reduces LLM API costs by dynamically routing requests based on complexity._
 
@@ -195,3 +198,24 @@ See [`docs/architecture.md`](docs/architecture.md) for:
 - Why a heuristic classifier over an LLM-based one
 - Trade-offs of synchronous routing vs. async quality verification
 - The feedback loop design for continuous improvement
+
+## Release & Verification
+
+The project includes an automated DevSecOps release pipeline (`.github/workflows/release.yml`) triggered on semantic version tags (`v*.*.*`).
+
+Each release automatically:
+1. Executes test suite gates.
+2. Builds the container image.
+3. Performs vulnerability scanning via Trivy.
+4. Generates an SPDX SBOM (`sbom.spdx.json`) using Anchore Syft.
+5. Publishes a GitHub Release with attached SBOM.
+
+### Verifying the Release
+```bash
+# Verify release via GitHub CLI
+gh release view v0.1.0 --repo SumitDalavi/llm-cost-autopilot
+
+# Download and inspect SBOM
+gh release download v0.1.0 --repo SumitDalavi/llm-cost-autopilot --pattern "sbom.spdx.json"
+cat sbom.spdx.json | jq .
+```
