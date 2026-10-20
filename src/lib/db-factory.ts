@@ -30,7 +30,7 @@ export function createDatabaseAdapter(): DbAdapter {
 
     let initialized = false;
 
-    async function init() {
+    const init = async (): Promise<void> => {
       if (initialized) return;
       await pool.query(`
         CREATE TABLE IF NOT EXISTS request_logs (
@@ -210,7 +210,7 @@ export function createDatabaseAdapter(): DbAdapter {
     async insertLog(log: RequestLog): Promise<void> {
       const db = await getSqlite();
       db.run(`
-        INSERT INTO request_logs (
+        INSERT OR REPLACE INTO request_logs (
           id, prompt_hash, prompt_preview, complexity_tier, routed_model, provider,
           input_tokens, output_tokens, cost, latency_ms, quality_score,
           was_escalated, escalated_to_model, timestamp
