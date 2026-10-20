@@ -1,6 +1,6 @@
 {
   "name": "llm-cost-autopilot",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "Intelligent LLM routing layer that analyzes request complexity and routes to the cheapest capable model",
   "main": "dist/index.js",
   "scripts": {
