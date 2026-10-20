@@ -3,7 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { loadRoutingConfig } from './router';
-import { getDb } from './database';
+import { getDb, getDbMode } from './database';
+import { credentialStatus } from './lib/credential-mode';
 import apiRouter from './routes/api';
 import logger from './logger';
 
@@ -21,9 +22,26 @@ app.use((req, _res, next) => {
   next();
 });
 
-// Health check — does not require auth
+// Health check — does not require auth, reports PCL mode
 app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    service: 'llm-cost-autopilot',
+    mode: {
+      database: getDbMode(),
+      ai: (credentialStatus.openai === 'live' || credentialStatus.anthropic === 'live') ? 'live' : 'mock',
+      aiProviders: [
+        ...(credentialStatus.openai === 'live' ? ['openai'] : []),
+        ...(credentialStatus.anthropic === 'live' ? ['anthropic'] : []),
+        ...((credentialStatus.openai !== 'live' && credentialStatus.anthropic !== 'live') ? ['mock'] : []),
+      ],
+      redis: credentialStatus.redis,
+    },
+    checks: {
+      database: getDbMode() === 'live' ? 'ok' : 'mock',
+    }
+  });
 });
 
 // API routes

@@ -3,15 +3,31 @@ import Anthropic from '@anthropic-ai/sdk';
 import axios from 'axios';
 import { CompletionRequest, CompletionResponse, Provider } from './types';
 import { getModelConfig, calculateCost, calculateSavingsVsGpt4o } from './modelRegistry';
+import { isRealOpenAIKey, isRealAnthropicKey } from './lib/credential-mode';
 import { v4 as uuidv4 } from 'uuid';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+let _openai: OpenAI | null = null;
+function getOpenAI(): OpenAI {
+  if (!_openai) {
+    _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || 'sk-dummy' });
+  }
+  return _openai;
+}
+
+let _anthropic: Anthropic | null = null;
+function getAnthropic(): Anthropic {
+  if (!_anthropic) {
+    _anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || 'sk-dummy' });
+  }
+  return _anthropic;
+}
 
 /**
  * Unified provider abstraction.
  * Handles OpenAI, Anthropic, and Ollama behind a single interface.
  * Returns a standardized CompletionResponse regardless of provider.
+ * Implements Progressive Credential Loading (PCL) — runs mock if keys missing/dummy,
+ * auto-promotes to live API if valid keys are provided.
  */
 export async function sendRequest(
   request: CompletionRequest,
@@ -25,13 +41,23 @@ export async function sendRequest(
   let promptTokens: number;
   let completionTokens: number;
 
-  if (process.env.OPENAI_API_KEY?.startsWith('sk-dummy') || process.env.ANTHROPIC_API_KEY?.startsWith('sk-dummy')) {
+  const hasLiveOpenAI = isRealOpenAIKey(process.env.OPENAI_API_KEY);
+  const hasLiveAnthropic = isRealAnthropicKey(process.env.ANTHROPIC_API_KEY);
+
+  if (config.provider === 'openai' && !hasLiveOpenAI) {
+    // MOCK MODE for OpenAI
     content = `[Mock Response] Routed to ${config.modelId} by Cost Autopilot`;
     promptTokens = 10;
     completionTokens = 20;
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise(resolve => setTimeout(resolve, 30));
+  } else if (config.provider === 'anthropic' && !hasLiveAnthropic) {
+    // MOCK MODE for Anthropic
+    content = `[Mock Response] Routed to ${config.modelId} by Cost Autopilot`;
+    promptTokens = 10;
+    completionTokens = 20;
+    await new Promise(resolve => setTimeout(resolve, 30));
   } else if (config.provider === 'openai') {
-    const response = await openai.chat.completions.create({
+    const response = await getOpenAI().chat.completions.create({
       model: config.modelId,
       messages: request.messages,
       max_tokens: request.maxTokens ?? 1024,
@@ -45,7 +71,7 @@ export async function sendRequest(
     const systemMsg = request.messages.find(m => m.role === 'system');
     const userMsgs = request.messages.filter(m => m.role !== 'system');
 
-    const response = await anthropic.messages.create({
+    const response = await getAnthropic().messages.create({
       model: config.modelId,
       max_tokens: request.maxTokens ?? 1024,
       system: systemMsg?.content,
@@ -108,9 +134,13 @@ export async function verifyQuality(
   generatedResponse: string
 ): Promise<number> {
   try {
+    if (!isRealOpenAIKey(process.env.OPENAI_API_KEY)) {
+      return 0.85; // Deterministic quality score in mock mode
+    }
+
     const userPrompt = originalMessages.filter(m => m.role === 'user').map(m => m.content).join('\n');
 
-    const judgmentResponse = await openai.chat.completions.create({
+    const judgmentResponse = await getOpenAI().chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
         {
